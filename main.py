@@ -43,7 +43,7 @@ def update_product(id:int , product:Product):
 def delete_product(id:int):
     for i in range(len(products)):
         if products[i].id == id:
-            products.remove(products[i]) # you can also write , del products[i]
+            products.remove(products[i]) # you can also write , del products
             
             return "product deleted"
 
