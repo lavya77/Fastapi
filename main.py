@@ -4,6 +4,7 @@ from database import session
 import database_models
 
 app = FastAPI()
+database_models = Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def greet():
@@ -15,6 +16,16 @@ products = [
     Product(id=3, name="Pen", description="A blue ink pen", price=1.99, quantity=100),
     Product(id=4, name="Table", description="A wooden table", price=199.99, quantity=20),
 ]
+
+def init_db():
+    db= session()
+
+    for product in products:
+        db.add(database_models.Product("product.model_dump"))
+
+    db.commit()
+
+init_db()       
 
 @app.get("/products")
 def get_all_products():
