@@ -9,7 +9,8 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin=["https://localhost:3000"]
+    allow_origin=["https://localhost:3000"],
+    aalow_methods=["*"]
 )
 
 database_models.Base.metadata.create_all(bind=engine)
@@ -65,7 +66,7 @@ def add_products(product:Product,db: Session = Depends(get_db)):
     db.commit()
     return product
 
-@app.put("/product")
+@app.put("/products/{id}")
 def update_product(id:int , product:Product,db: Session = Depends(get_db)):
     db_product = db.query(database_models.Product).filter(database_models.Product.id ==id ).first()
     if product:
