@@ -33,7 +33,7 @@ def init_db():
 
     if count == 0:
         for product in products:
-         db.add(database_models.Product("product.model_dump"))
+         db.add(database_models.Product(**product.model_dump))
 
     db.commit()
 
@@ -54,25 +54,29 @@ def get_product(id:int ,db: Session = Depends(get_db)):
     return "product not found"
 
 @app.post("/product")
-def add_products(product:Product):
-    products.append(product)
+def add_products(product:Product,db: Session = Depends(get_db)):
+    db.add(database_models.Product(**product.model_dump))
+    db.commit()
     return product
 
 @app.put("/product")
-def update_product(id:int , product:Product):
-    for i in range(len(products)):
-        if products[i].id == id:
-            products[i]= product
+def update_product(id:int , product:Product,db: Session = Depends(get_db)):
+    db_product = db.query(database_models.Product).filter(database_models.Product.id ==id ).first()
+    if product:
+            db_product.name= product.name
+            # all the other things
+            db.commit()
             return "Product added successfulyy"
-    return "no product added!"    
+    else:
+        return "no product added!"    
 
 @app.delete("/product")
-def delete_product(id:int):
-    for i in range(len(products)):
-        if products[i].id == id:
-            products.remove(products[i]) # you can also write , del products
-            
-            return "product deleted"
-
-    return "No product deleted"        
+def delete_product(id:int,db: Session = Depends(get_db)):
+    db_product = db.query(database_models.Product).filter(database_models.Product.id ==id ).first()
+    if db_product:
+        db.delete(db_product)
+        db.commit()
+        return "product deleted"
+    else:
+        return "No product deleted"        
     
