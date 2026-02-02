@@ -46,9 +46,9 @@ def get_all_products(db: Session = Depends(get_db)):
     return db_products
 
 @app.get("/product/{id}")
-def get_product(id:int):
-    for product in products:
-        if product.id == id:
+def get_product(id:int ,db: Session = Depends(get_db)):
+    product = db.query(database_models.Product).filter(database_models.Product.id ==id ).first()
+    if product:
             return product
         
     return "product not found"
