@@ -3,9 +3,15 @@ from models import Product
 from database import session ,engine
 import database_models
 from sqlalchemy.orm import Session
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin=["https://localhost:3000"]
+)
+
 database_models.Base.metadata.create_all(bind=engine)
 
 @app.get("/")
